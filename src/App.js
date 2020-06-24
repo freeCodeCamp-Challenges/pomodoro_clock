@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     // If user changes the session length during a session
     // then we do not setMinutes...
-    if (timer && sessionIsChanged !== "orange") {
+    if (timer && sessionIsChanged !== "orange" && !breakIsON) {
       setMinutes(sessionLength);
       setReset(false);
     }
@@ -73,7 +73,7 @@ function App() {
 
   // Set break countdown.
   useEffect(() => {
-    if (!sessionIsON && minutes === 0 && seconds === 0) {
+    if (!sessionIsON && minutes === 0 && seconds === 0 && breakIsON) {
       setMinutes(breakLength);
     }
   }, [sessionIsON, breakLength, minutes, seconds]);
