@@ -8,7 +8,6 @@ function App() {
   // For the timer
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
-  const [totalTimeLeft, setTotalTimeLeft] = useState(0);
   const [timer, setTimer] = useState(false);
   const [reset, setReset] = useState(false);
   const [sessionIsON, setSessionIsON] = useState(false);
@@ -38,6 +37,7 @@ function App() {
       }
       if (seconds === 0) {
         if (minutes === 0) {
+          setSessionIsON(false); // To start the break countdown.
           clearInterval(myInterval);
         } else {
           setMinutes(minutes => minutes - 1);
@@ -55,15 +55,11 @@ function App() {
     };
   }, [seconds, minutes, timer, reset, sessionIsON]);
 
-  console.log("out reset", reset);
-  console.log("out timer", timer, sessionIsON);
-
   // Set initial session time.
   useEffect(() => {
-    console.log("useEffect timer", timer, sessionIsON);
     // If user changes the session length during a session
     // then we do not setMinutes...
-    if (timer && sessionIsChanged !== 'orange' ) {
+    if (timer && sessionIsChanged !== "orange") {
       setMinutes(sessionLength);
       setReset(false);
     }
@@ -71,7 +67,14 @@ function App() {
       setMinutes(sessionLength);
       setReset(false);
     }
-  }, [setMinutes, sessionLength, sessionIsON, timer, reset]);
+  }, [setMinutes, sessionLength, sessionIsON, sessionIsChanged, timer, reset]);
+
+  // Set break countdown.
+  useEffect(() => {
+    if (!sessionIsON && minutes === 0 && seconds === 0) {
+      setMinutes(breakLength);
+    }
+  }, [sessionIsON, breakLength, minutes, seconds]);
 
   const breakLengthHandler = id => {
     if (id === "-") {
@@ -92,7 +95,7 @@ function App() {
       setSessionIsChanged("green");
     } else if (sessionIsON) {
       setSessionIsChanged("orange");
-    } 
+    }
   };
 
   const timerHandler = () => {
