@@ -12,6 +12,7 @@ function App() {
   const [reset, setReset] = useState(false);
   const [sessionIsON, setSessionIsON] = useState(false);
   const [sessionIsChanged, setSessionIsChanged] = useState("red");
+  const [breakIsON, setBreakIsON] = useState(false);
 
   useEffect(() => {
     // Brake Length
@@ -38,6 +39,7 @@ function App() {
       if (seconds === 0) {
         if (minutes === 0) {
           setSessionIsON(false); // To start the break countdown.
+          setBreakIsON(true)
           clearInterval(myInterval);
         } else {
           setMinutes(minutes => minutes - 1);
@@ -108,6 +110,8 @@ function App() {
     setSessionLength(25);
     setReset(true);
     setSessionIsON(false);
+    setSessionIsChanged('red');
+    setBreakIsON(false);
   };
 
   return (
@@ -138,7 +142,7 @@ function App() {
         </div>
         {/* /////////////////// */}
         <div className="timer-portion">
-          <h2 id="timer-label">Session</h2>
+          <h2 id="timer-label">{!breakIsON ? 'Session' : 'A break has begun'}</h2>
           <h1 id="time-left">
             {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
           </h1>
