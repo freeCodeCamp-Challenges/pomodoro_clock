@@ -1,32 +1,78 @@
-import React from "react";
+import React, { StyleSheet } from "react";
 import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Pomodoro Clock</h1>
-      <div className="break-portion">
-        <h3 id="break-label">Break Length</h3>
-        <h4 id="break-decrement">-</h4>
-        <h3 id="break-length">5</h3>
-        <h4 id="break-increment">+</h4>
-      </div>
-
-      {/* ///////////////// */}
-      <div className="session-portion">
-        <h3 id="session-label">Session Lenght</h3>
-        <h4 id="session-decrement">-</h4>
-        <h3 id="session-length">25</h3>
-        <h4 id="session-increment">+</h4>
-      </div>
-      <div className="timer-portion">
-        <h2 id="timer-label">Session</h2>
-        <h1 id="time-left">25:00</h1>
-        <div id="start_stop">Start/Stop</div>
-        <div id="reset">Reset</div>
+    <div>
+      <h1 style={styles.pomodoroTitle}>Pomodoro Clock</h1>
+      <div className="App" style={styles.container}>
+        <div className="break-portion">
+          <h3 id="break-label">Break Length</h3>
+          <div style={styles.portionElements}>
+            <div style={styles.decrement} id="break-decrement">
+              -
+            </div>
+            <div style={styles.length} id="break-length">
+              5
+            </div>
+            <div style={styles.increment} id="break-increment">
+              +
+            </div>
+          </div>
+        </div>
+        {/* /////////////////// */}
+        <div className="timer-portion">
+          <h2 id="timer-label">Session</h2>
+          <h1 id="time-left">25:00</h1>
+          <div id="start_stop">Start/Stop</div>
+          <div id="reset">Reset</div>
+        </div>
+        {/* ///////////////// */}
+        <div className="session-portion">
+          <h3 id="session-label">Session Length</h3>
+          <div style={styles.portionElements}>
+            <div style={styles.decrement} id="session-decrement">
+              -
+            </div>
+            <div style={styles.length} id="session-length">
+              25
+            </div>
+            <div style={styles.increment} id="session-increment">
+              +
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+const styles = (StyleSheet = {
+  pomodoroTitle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  container: {
+    display: "flex",
+    // flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  portionElements: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
+    fontSize: 20
+  },
+  decrement: {
+    fontSize: 20
+  },
+  increment: {
+    fontSize: 20
+  },
+  length: {}
+});
 
 export default App;

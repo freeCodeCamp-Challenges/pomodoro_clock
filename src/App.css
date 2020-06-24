@@ -1,11 +1,12 @@
 .App {
   text-align: center;
+  
 }
 
 .break-portion {
-  position: absolute;
+  /* position: relative;
   top: 100px;
-  left: 500px;
+  left: 500px; */
   width: 150px;
   height: 100px;
   border: 1px solid black;
@@ -14,27 +15,27 @@
   border-radius: 50px;
 }
 #break-decrement {
-  position: absolute;
-  top: 35px;
-  left: 50px;
+  /* position: relative;
+  top: 5px;
+  left: 1px; */
 }
 #break-increment {
-  position: absolute;
+  /* position: relative;
   top: 35px;
-  left: 100px;
+  left: 100px; */
 }
 #break-label {
 }
 #break-length {
-  position: absolute;
+  /* position: relative;
   top: 37px;
-  left: 75px;
+  left: 75px; */
 }
 
 .session-portion {
-  position: absolute;
+  /* position: relative;
   top: 100px;
-  right: 500px;
+  right: 500px; */
   width: 150px;
   height: 100px;
   border: 1px solid black;
@@ -44,27 +45,27 @@
 }
 
 #session-decrement {
-  position: absolute;
+  /* position: relative;
   top: 35px;
-  left: 50px;
+  left: 50px; */
 }
 #session-increment {
-  position: absolute;
+  /* position: relative;
   top: 35px;
-  left: 100px;
+  left: 100px; */
 }
 #session-label {
 }
 #session-length {
-  position: absolute;
+  /* position: relative;
   top: 37px;
-  left: 67px;
+  left: 67px; */
 }
 
 .timer-portion {
-  position: absolute;
+  /* position: relative;
   top: 70px;
-  right: 680px;
+  right: 680px; */
   width: 150px;
   height: 180px;
   border: 1px solid black;
@@ -81,3 +82,12 @@
 }
 #reset {
 }
+
+
+/* @media all and (min-width: 800) {
+  .App {
+    position: relative;
+  top: 100px;
+  left: 50px;
+  }
+} */
