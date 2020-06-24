@@ -5,6 +5,11 @@ function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
 
+  // For the timer
+  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(25);
+  const [totalTimeLeft, setTotalTimeLeft] = useState(0);
+
   useEffect(() => {
 console.log('breakLength', breakLength);
 
@@ -18,6 +23,34 @@ console.log('breakLength', breakLength);
       setSessionLength(25);
     }
   }, [breakLength, setBreakLength, sessionLength, setSessionLength]);
+
+
+  // For the timer
+  useEffect(() => {
+    const myInterval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds => seconds - 1);
+      }
+      if (seconds === 0 ) {
+        if (minutes === 0 ) {
+          clearInterval(myInterval);
+        } else {
+          setMinutes(minutes => minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+    
+    // if (corChoice || (!corChoice && choiceSave)) {
+    //   clearInterval(myInterval);
+    //   timerAnimation.stopAnimation();
+    //   timerOpacity.stopAnimation();
+    // }
+    return () => {
+      clearInterval(myInterval);
+    };
+  }, [seconds, minutes]);
+
 
   return (
     <div>
@@ -48,7 +81,7 @@ console.log('breakLength', breakLength);
         {/* /////////////////// */}
         <div className="timer-portion">
           <h2 id="timer-label">Session</h2>
-          <h1 id="time-left">25:00</h1>
+          <h1 id="time-left">{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</h1>
           <div style={styles.sessionButtons} id="start_stop">
             Start/Stop
           </div>
