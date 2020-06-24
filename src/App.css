@@ -8,21 +8,17 @@
   top: 100px;
   left: 500px; */
   width: 150px;
-  height: 100px;
+  height: 110px;
   border: 1px solid black;
   padding: 2px;
   margin: 10px;
   border-radius: 50px;
 }
 #break-decrement {
-  /* position: relative;
-  top: 5px;
-  left: 1px; */
+  cursor: pointer;
 }
 #break-increment {
-  /* position: relative;
-  top: 35px;
-  left: 100px; */
+  cursor: pointer;
 }
 #break-label {
 }
@@ -37,7 +33,7 @@
   top: 100px;
   right: 500px; */
   width: 150px;
-  height: 100px;
+  height: 110px;
   border: 1px solid black;
   padding: 2px;
   margin: 10px;
@@ -45,14 +41,10 @@
 }
 
 #session-decrement {
-  /* position: relative;
-  top: 35px;
-  left: 50px; */
+  cursor: pointer;
 }
 #session-increment {
-  /* position: relative;
-  top: 35px;
-  left: 100px; */
+  cursor: pointer;
 }
 #session-label {
 }
@@ -67,7 +59,7 @@
   top: 70px;
   right: 680px; */
   width: 150px;
-  height: 180px;
+  height: 200px;
   border: 1px solid black;
   padding: 2px;
   margin: 10px;
@@ -78,9 +70,10 @@
 #timer-length {
 }
 #start_stop {
-  margin: 10px;
+  cursor: pointer;
 }
 #reset {
+  cursor: pointer;
 }
 
 
