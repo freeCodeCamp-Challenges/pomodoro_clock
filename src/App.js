@@ -7,32 +7,37 @@ function App() {
 
   // For the timer
   const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(25);
+  const [minutes, setMinutes] = useState(0);
   const [totalTimeLeft, setTotalTimeLeft] = useState(0);
+  const [timer, setTimer] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [sessionIsON, setSessionIsON] = useState(false);
+  const [sessionIsChanged, setSessionIsChanged] = useState("red");
 
   useEffect(() => {
-console.log('breakLength', breakLength);
-
     // Brake Length
-    if (breakLength  <= 0||  breakLength >= 5) {
+    if (breakLength <= 0 || breakLength >= 5) {
       setBreakLength(5);
     }
 
     // Session Length
-    if (sessionLength  <= 0||  sessionLength >= 25) {
+    if (sessionLength <= 0 || sessionLength >= 60) {
       setSessionLength(25);
     }
   }, [breakLength, setBreakLength, sessionLength, setSessionLength]);
 
-
   // For the timer
   useEffect(() => {
+    if (reset) {
+      setMinutes(25);
+      setSeconds(0);
+    }
     const myInterval = setInterval(() => {
       if (seconds > 0) {
         setSeconds(seconds => seconds - 1);
       }
-      if (seconds === 0 ) {
-        if (minutes === 0 ) {
+      if (seconds === 0) {
+        if (minutes === 0) {
           clearInterval(myInterval);
         } else {
           setMinutes(minutes => minutes - 1);
@@ -40,17 +45,67 @@ console.log('breakLength', breakLength);
         }
       }
     }, 1000);
-    
-    // if (corChoice || (!corChoice && choiceSave)) {
-    //   clearInterval(myInterval);
-    //   timerAnimation.stopAnimation();
-    //   timerOpacity.stopAnimation();
-    // }
+
+    if (!timer) {
+      clearInterval(myInterval);
+    }
+
     return () => {
       clearInterval(myInterval);
     };
-  }, [seconds, minutes]);
+  }, [seconds, minutes, timer, reset, sessionIsON]);
 
+  console.log("out reset", reset);
+  console.log("out timer", timer, sessionIsON);
+
+  // Set initial session time.
+  useEffect(() => {
+    console.log("useEffect timer", timer, sessionIsON);
+    // If user changes the session length during a session
+    // then we do not setMinutes...
+    if (timer && sessionIsChanged !== 'orange' ) {
+      setMinutes(sessionLength);
+      setReset(false);
+    }
+    if (reset) {
+      setMinutes(sessionLength);
+      setReset(false);
+    }
+  }, [setMinutes, sessionLength, sessionIsON, timer, reset]);
+
+  const breakLengthHandler = id => {
+    if (id === "-") {
+      setBreakLength(prev => prev - 1);
+    } else if (id === "+") {
+      setBreakLength(prev => prev + 1);
+    }
+  };
+  const sessionLengthHandler = id => {
+    if (id === "-") {
+      setSessionLength(prev => prev - 1);
+    } else if (id === "+") {
+      setSessionLength(prev => prev + 1);
+    }
+    // Use this to handle the time in the timer.
+    // See useEffect: "Set initial session time."
+    if (!timer && !sessionIsON) {
+      setSessionIsChanged("green");
+    } else if (sessionIsON) {
+      setSessionIsChanged("orange");
+    } 
+  };
+
+  const timerHandler = () => {
+    setSessionIsON(true);
+    setTimer(!timer);
+  };
+
+  const resetHandler = () => {
+    setBreakLength(5);
+    setSessionLength(25);
+    setReset(true);
+    setSessionIsON(false);
+  };
 
   return (
     <div>
@@ -60,7 +115,7 @@ console.log('breakLength', breakLength);
           <h3 id="break-label">Break Length</h3>
           <div style={styles.portionElements}>
             <div
-              onClick={() => setBreakLength(num => num - 1)}
+              onClick={() => breakLengthHandler("-")}
               style={styles.decrement}
               id="break-decrement"
             >
@@ -70,7 +125,7 @@ console.log('breakLength', breakLength);
               {breakLength}
             </div>
             <div
-              onClick={() => setBreakLength(num => num + 1)}
+              onClick={() => breakLengthHandler("+")}
               style={styles.increment}
               id="break-increment"
             >
@@ -81,18 +136,26 @@ console.log('breakLength', breakLength);
         {/* /////////////////// */}
         <div className="timer-portion">
           <h2 id="timer-label">Session</h2>
-          <h1 id="time-left">{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</h1>
-          <div style={styles.sessionButtons} id="start_stop">
+          <h1 id="time-left">
+            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+          </h1>
+          <div
+            onClick={timerHandler}
+            style={styles.sessionButtons}
+            id="start_stop"
+          >
             Start/Stop
           </div>
-          <div id="reset">Reset</div>
+          <div onClick={resetHandler} id="reset">
+            Reset
+          </div>
         </div>
         {/* ///////////////// */}
         <div className="session-portion">
           <h3 id="session-label">Session Length</h3>
           <div style={styles.portionElements}>
             <div
-              onClick={() => setSessionLength(num => num - 1)}
+              onClick={() => sessionLengthHandler("-")}
               style={styles.decrement}
               id="session-decrement"
             >
@@ -102,7 +165,7 @@ console.log('breakLength', breakLength);
               {sessionLength}
             </div>
             <div
-              onClick={() => setSessionLength(num => num + 1)}
+              onClick={() => sessionLengthHandler("+")}
               style={styles.increment}
               id="session-increment"
             >
