@@ -10,12 +10,13 @@ function App() {
   const [sessionLength, setSessionLength] = useState(25);
 
   // For the timer
-  const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [minutes, setMinutes] = useState("25");
+  const [seconds, setSeconds] = useState("00");
   const [timer, setTimer] = useState(false);
   const [reset, setReset] = useState(false);
   const [sessionIsON, setSessionIsON] = useState(false);
   const [sessionIsChanged, setSessionIsChanged] = useState("red");
+  const [pause, setPause] = useState(false);
   const [breakIsON, setBreakIsON] = useState(false);
   const [sessionTitle, setSessionTitle] = useState("Session");
 
@@ -38,23 +39,31 @@ function App() {
   // For the timer
   useEffect(() => {
     if (reset) {
-      setMinutes(25);
-      // {!reset && !sessionIsON ? `0${minutes}` : minutes}:
-      //       {seconds < 10 ? `0${seconds}` : seconds}
-      setSeconds(0);
+      setMinutes("25");
+      setSeconds("00");
     }
     const myInterval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds => seconds - 1);
+      if (+seconds > 0) {
+        setSeconds(seconds => {
+          const sec = +seconds - 1;
+          return seconds < 10 ? "0" + sec.toString() : sec.toString();
+        });
       }
-      if (seconds === 0) {
-        if (minutes === 0) {
+      // setSeconds(seconds => +seconds - 1);
+
+      if (+seconds === 0) {
+        if (+minutes === 0) {
           // audio.play();
           setSessionIsON(false); // To start the break countdown.
           setBreakIsON(true);
           clearInterval(myInterval);
         } else {
-          setMinutes(minutes => minutes - 1);
+          setMinutes(minutes => {
+            const min = +minutes - 1;
+            return minutes < 10 ? "0" + min.toString() : min.toString();
+          });
+          // setMinutes(minutes => +minutes - 1);
+
           setSeconds(59);
         }
       }
@@ -63,18 +72,33 @@ function App() {
     if (!timer) {
       clearInterval(myInterval);
     }
+    if (reset) {
+      clearInterval(myInterval);
+    }
 
     return () => {
       clearInterval(myInterval);
     };
-  }, [seconds, setSeconds, minutes, setMinutes, timer, reset, setSessionIsON, setBreakIsON]);
+  }, [
+    seconds,
+    setSeconds,
+    minutes,
+    setMinutes,
+    timer,
+    reset,
+    setSessionIsON,
+    setBreakIsON
+  ]);
 
   // Set initial session time.
   useEffect(() => {
     // If user changes the session length during a session
     // then we do not setMinutes...
+    // console.log('Set initial session time.', pause, timer, sessionIsChanged, !breakIsON, sessionIsON);
     if (timer && sessionIsChanged !== "orange" && !breakIsON && sessionIsON) {
-      setMinutes(sessionLength);
+      
+      setMinutes(sessionLength < 10 ? "0" + sessionLength : sessionLength);
+      // setMinutes(sessionLength);
       setReset(false);
     }
   }, [
@@ -84,25 +108,25 @@ function App() {
     breakIsON,
     sessionIsChanged,
     timer,
-    reset
+    setReset
   ]);
 
   // Set break countdown.
   useEffect(() => {
     if (!sessionIsON && minutes === 0 && seconds === 0 && breakIsON) {
-      setMinutes(breakLength);
+      setMinutes(breakLength < 10 ? "0" + breakLength : breakLength);
+
+      // setMinutes(breakLength);
     }
   }, [sessionIsON, breakIsON, breakLength, minutes, seconds]);
 
   useEffect(() => {
-    console.log('sessionIsON', sessionIsON);
-    
     if (sessionIsON) {
       setSessionTitle("A Session has begun.");
     } else if (breakIsON) {
       setSessionTitle("A break has begun.");
     } else {
-      setSessionTitle('Session')
+      setSessionTitle("Session");
     }
   }, [sessionIsON, breakIsON]);
 
@@ -116,37 +140,41 @@ function App() {
   const sessionLengthHandler = id => {
     if (id === "-" && sessionLength > 1) {
       setSessionLength(prev => prev - 1);
-    } else if (id === "+"  && sessionLength < 60) {
+    } else if (id === "+" && sessionLength < 60) {
       setSessionLength(prev => prev + 1);
     }
     // Use this to handle the time in the timer.
     // See useEffect: "Set initial session time."
-    if (!timer && !sessionIsON) {
+    if (!timer && !sessionIsON ) {
       setSessionIsChanged("green");
     } else if (sessionIsON) {
       setSessionIsChanged("orange");
-    }
+    } 
   };
 
   const timerHandler = () => {
+    setReset(false);
     setSessionIsON(true);
     setTimer(!timer);
+    if (sessionIsON && sessionIsChanged === 'green') {
+      setSessionIsChanged('orange')
+      setPause(true)
+    }
+    
   };
 
   const resetHandler = () => {
     setBreakLength(5);
     setSessionLength(25);
-    setMinutes(25);
+    setMinutes('25');
     setReset(true);
+    setTimer(false);
     setSessionIsON(false);
     setBreakIsON(false);
     setSessionIsChanged("red");
     setBreakIsON(false);
-    setSessionTitle('Session')
+    setSessionTitle("Session");
   };
-
-  console.log('timer ', minutes, seconds);
-  
 
   return (
     <div>
@@ -178,8 +206,7 @@ function App() {
         <div className="timer-portion">
           <h2 id="timer-label">{sessionTitle}</h2>
           <h1 id="time-left">
-            {!reset && !sessionIsON ? `0${minutes}` : minutes}:
-            {seconds < 10 ? `0${seconds}` : seconds}
+            {minutes}:{seconds}
           </h1>
           <div
             onClick={timerHandler}
