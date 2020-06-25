@@ -27,10 +27,10 @@ function App() {
     }
 
     // Session Length
-    if (sessionLength === 1) {
-      setSessionLength(0);
+    if (sessionLength <= 1) {
+      setSessionLength(1);
     }
-    if (sessionLength === 0 || sessionLength === 60) {
+    if (sessionLength >= 60) {
       setSessionLength(60);
     }
   }, [breakLength, setBreakLength, sessionLength, setSessionLength]);
@@ -39,6 +39,8 @@ function App() {
   useEffect(() => {
     if (reset) {
       setMinutes(25);
+      // {!reset && !sessionIsON ? `0${minutes}` : minutes}:
+      //       {seconds < 10 ? `0${seconds}` : seconds}
       setSeconds(0);
     }
     const myInterval = setInterval(() => {
@@ -65,7 +67,7 @@ function App() {
     return () => {
       clearInterval(myInterval);
     };
-  }, [seconds, minutes, timer, reset, sessionIsON]);
+  }, [seconds, setSeconds, minutes, setMinutes, timer, reset, setSessionIsON, setBreakIsON]);
 
   // Set initial session time.
   useEffect(() => {
@@ -105,16 +107,16 @@ function App() {
   }, [sessionIsON, breakIsON]);
 
   const breakLengthHandler = id => {
-    if (id === "-") {
+    if (id === "-" && breakLength > 1) {
       setBreakLength(prev => prev - 1);
-    } else if (id === "+") {
+    } else if (id === "+" && breakLength < 60) {
       setBreakLength(prev => prev + 1);
     }
   };
   const sessionLengthHandler = id => {
-    if (id === "-") {
+    if (id === "-" && sessionLength > 1) {
       setSessionLength(prev => prev - 1);
-    } else if (id === "+") {
+    } else if (id === "+"  && sessionLength < 60) {
       setSessionLength(prev => prev + 1);
     }
     // Use this to handle the time in the timer.
@@ -142,6 +144,9 @@ function App() {
     setBreakIsON(false);
     setSessionTitle('Session')
   };
+
+  console.log('timer ', minutes, seconds);
+  
 
   return (
     <div>
