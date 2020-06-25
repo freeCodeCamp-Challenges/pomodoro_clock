@@ -1,6 +1,10 @@
 import React, { StyleSheet, useState, useEffect } from "react";
 import "./App.css";
 
+// const audio = new Audio(
+//   "http://dight310.byu.edu/media/audio/FreeLoops.com/2/2/Cat%20Meow%202-8973-Free-Loops.com.mp3"
+// );
+
 function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
@@ -13,16 +17,21 @@ function App() {
   const [sessionIsON, setSessionIsON] = useState(false);
   const [sessionIsChanged, setSessionIsChanged] = useState("red");
   const [breakIsON, setBreakIsON] = useState(false);
+  const [sessionTitle, setSessionTitle] = useState("Session");
 
   useEffect(() => {
     // Brake Length
-    if (breakLength <= 0 || breakLength >= 5) {
-      setBreakLength(5);
+    // if (breakLength <= 0 || breakLength >= 5) {
+    if (breakLength <= 1) {
+      setBreakLength(1);
     }
 
     // Session Length
-    if (sessionLength <= 0 || sessionLength >= 60) {
-      setSessionLength(25);
+    if (sessionLength === 1) {
+      setSessionLength(0);
+    }
+    if (sessionLength === 0 || sessionLength === 60) {
+      setSessionLength(60);
     }
   }, [breakLength, setBreakLength, sessionLength, setSessionLength]);
 
@@ -38,8 +47,9 @@ function App() {
       }
       if (seconds === 0) {
         if (minutes === 0) {
+          // audio.play();
           setSessionIsON(false); // To start the break countdown.
-          setBreakIsON(true)
+          setBreakIsON(true);
           clearInterval(myInterval);
         } else {
           setMinutes(minutes => minutes - 1);
@@ -65,15 +75,34 @@ function App() {
       setMinutes(sessionLength);
       setReset(false);
     }
-  
-  }, [setMinutes, sessionLength, sessionIsON, sessionIsChanged, timer, reset]);
+  }, [
+    setMinutes,
+    sessionLength,
+    sessionIsON,
+    breakIsON,
+    sessionIsChanged,
+    timer,
+    reset
+  ]);
 
   // Set break countdown.
   useEffect(() => {
     if (!sessionIsON && minutes === 0 && seconds === 0 && breakIsON) {
       setMinutes(breakLength);
     }
-  }, [sessionIsON, breakLength, minutes, seconds]);
+  }, [sessionIsON, breakIsON, breakLength, minutes, seconds]);
+
+  useEffect(() => {
+    console.log('sessionIsON', sessionIsON);
+    
+    if (sessionIsON) {
+      setSessionTitle("A Session has begun.");
+    } else if (breakIsON) {
+      setSessionTitle("A break has begun.");
+    } else {
+      setSessionTitle('Session')
+    }
+  }, [sessionIsON, breakIsON]);
 
   const breakLengthHandler = id => {
     if (id === "-") {
@@ -105,10 +134,13 @@ function App() {
   const resetHandler = () => {
     setBreakLength(5);
     setSessionLength(25);
+    setMinutes(25);
     setReset(true);
     setSessionIsON(false);
-    setSessionIsChanged('red');
     setBreakIsON(false);
+    setSessionIsChanged("red");
+    setBreakIsON(false);
+    setSessionTitle('Session')
   };
 
   return (
@@ -139,9 +171,10 @@ function App() {
         </div>
         {/* /////////////////// */}
         <div className="timer-portion">
-          <h2 id="timer-label">{!breakIsON ? 'Session' : 'A break has begun'}</h2>
+          <h2 id="timer-label">{sessionTitle}</h2>
           <h1 id="time-left">
-            {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            {!reset && !sessionIsON ? `0${minutes}` : minutes}:
+            {seconds < 10 ? `0${seconds}` : seconds}
           </h1>
           <div
             onClick={timerHandler}
@@ -178,6 +211,18 @@ function App() {
           </div>
         </div>
       </div>
+      {breakIsON && (
+        <audio
+          id="beep"
+          src="http://www.birding.dk/galleri/stemmermp3/Locustella%20naevia%201.mp3"
+          autoPlay
+        ></audio>
+      )}
+      {/* This one is just for FCC tester. The one above plays the sound! */}
+      <audio
+        id="beep"
+        src="http://www.birding.dk/galleri/stemmermp3/Locustella%20naevia%201.mp3"
+      ></audio>
     </div>
   );
 }
