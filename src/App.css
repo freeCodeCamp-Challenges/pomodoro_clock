@@ -20,13 +20,6 @@
 #break-increment {
   cursor: pointer;
 }
-#break-label {
-}
-#break-length {
-  /* position: relative;
-  top: 37px;
-  left: 75px; */
-}
 
 .session-portion {
   /* position: relative;
@@ -46,13 +39,7 @@
 #session-increment {
   cursor: pointer;
 }
-#session-label {
-}
-#session-length {
-  /* position: relative;
-  top: 37px;
-  left: 67px; */
-}
+
 
 .timer-portion {
   /* position: relative;
@@ -66,21 +53,12 @@
   border-radius: 50px;
 }
 #timer-label {
+  height: 30px;
 }
-#timer-length {
-}
+
 #start_stop {
   cursor: pointer;
 }
 #reset {
   cursor: pointer;
 }
-
-
-/* @media all and (min-width: 800) {
-  .App {
-    position: relative;
-  top: 100px;
-  left: 50px;
-  }
-} */
